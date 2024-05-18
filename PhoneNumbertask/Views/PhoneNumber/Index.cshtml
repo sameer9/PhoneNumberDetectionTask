@@ -3,12 +3,21 @@
 <h1>Phone Number Detection</h1>
 
 <form asp-controller="PhoneNumber" asp-action="Convert" method="post">
-    <div class="form-group">
-        <label for="inputText">Enter text:</label>
-        <textarea class="form-control" id="inputText" name="InputText" rows="5" placeholder="Enter text...">@Model.InputText</textarea>
-        <span asp-validation-for="InputText" class="text-danger"></span>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="inputText">Enter text:</label>
+                <input type="text" class="form-control" id="inputText" name="InputText" placeholder="Enter text..." value="@Model.InputText">
+                <span asp-validation-for="InputText" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6 mt-4">
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Convert</button>
+            </div>
+        </div>
     </div>
-    <button type="submit" class="btn btn-primary">Convert</button>
+
 </form>
 
 @if (!string.IsNullOrEmpty(Model.ConvertedText))
