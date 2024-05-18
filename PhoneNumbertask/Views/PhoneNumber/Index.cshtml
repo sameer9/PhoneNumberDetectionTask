@@ -1,0 +1,22 @@
+﻿@model PhoneNumbertask.Models.PhoneNumberModel
+
+<h1>Phone Number Detection</h1>
+
+<form asp-controller="PhoneNumber" asp-action="Convert" method="post">
+    <div class="form-group">
+        <label for="inputText">Enter text:</label>
+        <textarea class="form-control" id="inputText" name="InputText" rows="5" placeholder="Enter text...">@Model.InputText</textarea>
+        <span asp-validation-for="InputText" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Convert</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.ConvertedText))
+{
+    <div class="mt-3">
+        <h3>Converted text:</h3>
+        <p>@Model.ConvertedText</p>
+        <h3>Validation result:</h3>
+        <p>@Model.ValidationResult</p>
+    </div>
+}
