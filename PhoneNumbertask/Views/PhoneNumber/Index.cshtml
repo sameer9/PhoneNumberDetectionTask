@@ -2,7 +2,8 @@
 
 <h1>Phone Number Detection</h1>
 
-<form asp-controller="PhoneNumber" asp-action="Convert" method="post">
+<form asp-controller="PhoneNumber" asp-action="Convert" method="post" enctype="multipart/form-data">
+
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
@@ -13,6 +14,12 @@
         </div>
         <div class="col-md-6 mt-4">
             <div class="form-group">
+                <b><label for="inputText">Or &nbsp;&nbsp;</label></b>
+
+                <label for="FileContent">Choose file:</label>
+                <input type="file" class="form-control-file" id="FileContent" value="@Model.FileContent" onchange="uploadFile()" name="FileContent">
+                @* <span asp-validation-for="FileContent" class="text-danger"></span> *@
+              
                 <button type="submit" class="btn btn-primary">Convert</button>
             </div>
         </div>

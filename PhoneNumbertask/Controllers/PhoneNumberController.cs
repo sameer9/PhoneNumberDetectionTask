@@ -11,13 +11,27 @@ namespace PhoneNumbertask.Controllers
             return View(new PhoneNumberModel());
         }
 
-        [HttpPost]
 
+        // Here is the post method where i am getting input from user either from text field or from file upload.
+        [HttpPost]
         public IActionResult Convert(PhoneNumberModel model)
         {
+            if (model.InputText != null) { 
+                model.FileContent = null;
+            }
+            
+          
+            if (string.IsNullOrWhiteSpace(model.InputText) && model.FileContent != null)
+            {
+                using (var reader = new StreamReader(model.FileContent.OpenReadStream()))
+                {
+                    model.InputText = reader.ReadToEnd();
+                }
+            }
+
             if (string.IsNullOrWhiteSpace(model.InputText))
             {
-                ModelState.AddModelError(nameof(model.InputText), "Please enter a phone number.");
+                ModelState.AddModelError(nameof(model.InputText), "Please enter a phone number or upload a file.");
             }
             else
             {
@@ -42,8 +56,36 @@ namespace PhoneNumbertask.Controllers
             }
 
             // ModelState is valid, continue processing
+            model.InputText = null;
+            model.FileContent = null;
             return View("Index", model);
+
         }
+
+
+
+
+        [HttpPost]
+        public IActionResult UploadFile(IFormFile fileContent)
+        {
+            string fileContentAsString = string.Empty;
+
+            if (fileContent != null)
+            {
+                using (var reader = new StreamReader(fileContent.OpenReadStream()))
+                {
+                    fileContentAsString = reader.ReadToEnd();
+                }
+            }
+
+            // Now you can use fileContentAsString as needed
+            return Ok(); // Return any appropriate response
+        }
+
+
+
+
+
 
         private string ConvertWordsToNumbers(string input)
         {
