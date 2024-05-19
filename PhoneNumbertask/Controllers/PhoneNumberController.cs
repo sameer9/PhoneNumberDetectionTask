@@ -19,8 +19,10 @@ namespace PhoneNumbertask.Controllers
             if (model.InputText != null) { 
                 model.FileContent = null;
             }
-            
-          
+
+            //ProcessFile()
+
+
             if (string.IsNullOrWhiteSpace(model.InputText) && model.FileContent != null)
             {
                 using (var reader = new StreamReader(model.FileContent.OpenReadStream()))
@@ -36,6 +38,8 @@ namespace PhoneNumbertask.Controllers
             else
             {
                 model.ConvertedText = ConvertWordsToNumbers(model.InputText).Replace(" ", "");
+
+              
                 model.ValidationResult = IdentifyPhoneNumberFormat(model.ConvertedText);
 
                 if (string.IsNullOrEmpty(model.ValidationResult))
@@ -61,28 +65,6 @@ namespace PhoneNumbertask.Controllers
             return View("Index", model);
 
         }
-
-
-
-
-        [HttpPost]
-        public IActionResult UploadFile(IFormFile fileContent)
-        {
-            string fileContentAsString = string.Empty;
-
-            if (fileContent != null)
-            {
-                using (var reader = new StreamReader(fileContent.OpenReadStream()))
-                {
-                    fileContentAsString = reader.ReadToEnd();
-                }
-            }
-
-            // Now you can use fileContentAsString as needed
-            return Ok(); // Return any appropriate response
-        }
-
-
 
 
 
@@ -122,6 +104,8 @@ namespace PhoneNumbertask.Controllers
 
             return input;
         }
+
+        
 
         private string IdentifyPhoneNumberFormat(string phoneNumber)
         {
