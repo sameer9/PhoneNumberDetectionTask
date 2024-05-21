@@ -7,13 +7,15 @@
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label for="inputText">Enter text:</label>
+                <label for="inputText"><p>Enter text:&nbsp;&nbsp; <b>Note*</b>&nbsp;&nbsp; for multiple entry please enter number(s) followed by ( , )comma.</p> </label>
                 <input type="text" class="form-control" id="inputText" name="InputText" placeholder="Enter text..." value="@Model.InputText">
                 <span asp-validation-for="InputText" class="text-danger"></span>
             </div>
         </div>
-        <div class="col-md-6 mt-4">
+        <div class="col-md-6 mt-4" style="margin-top:40px !important;">
             <div class="form-group">
+              
+
                 <b><label for="inputText">Or &nbsp;&nbsp;</label></b>
 
                 <label for="FileContent">Choose file:</label>

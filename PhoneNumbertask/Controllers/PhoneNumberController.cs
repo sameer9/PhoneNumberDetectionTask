@@ -6,6 +6,7 @@ namespace PhoneNumbertask.Controllers
 {
     public class PhoneNumberController : Controller
     {
+        string resultStringAfterCheck = "";
         public IActionResult Index()
         {
             return View(new PhoneNumberModel());
@@ -39,18 +40,26 @@ namespace PhoneNumbertask.Controllers
             {
                 model.ConvertedText = ConvertWordsToNumbers(model.InputText).Replace(" ", "");
 
-              
-                model.ValidationResult = IdentifyPhoneNumberFormat(model.ConvertedText);
+                
+                var phoneNumberList = model.ConvertedText.Split(',');
+                foreach (var phoneNumber in phoneNumberList)
+                {
+                    model.ValidationResult = IdentifyPhoneNumberFormat(phoneNumber);
 
-                if (string.IsNullOrEmpty(model.ValidationResult))
-                {
-                    ModelState.AddModelError(nameof(model.InputText), "Invalid phone number format.");
+                    if (string.IsNullOrEmpty(model.ValidationResult))
+                    {
+                        ModelState.AddModelError(nameof(model.InputText), "Invalid phone number format.");
+                    }
+                    else
+                    {
+                        // If ValidationResult is valid, remove any existing errors related to InputText
+                        ModelState.Remove(nameof(model.InputText));
+                    }
+
+                    model.ValidationResult = resultStringAfterCheck;    
                 }
-                else
-                {
-                    // If ValidationResult is valid, remove any existing errors related to InputText
-                    ModelState.Remove(nameof(model.InputText));
-                }
+
+
             }
 
             if (!ModelState.IsValid)
@@ -105,38 +114,49 @@ namespace PhoneNumbertask.Controllers
             return input;
         }
 
-        
+
 
         private string IdentifyPhoneNumberFormat(string phoneNumber)
         {
             // Regex patterns to identify different phone number formats
-            string tenDigitPattern = @"^\d{10}$";
-            string countryCodePattern = @"^\+\d{1,3}-?\d{10}$";
-            string withoutParenthesesPattern = @"^(\d{3}-)?\d{3}-\d{4}$";
-            string withoutParenthesesAndCountryCodePattern = @"^\+?(\d{3}-)?\d{3}-\d{4}$";
+            string tenDigitPattern = @"^\d{10}$"; // Matches exactly 10 digits (e.g., 1234567890)
+            string countryCodePattern = @"^\+\d{1,3}-?\d{10}$"; // Matches country code followed by 10 digits (e.g., +1-1234567890 or +11234567890)
+            string dashSeparatedPattern = @"^(\d{3}-)?\d{3}-\d{4}$"; // Matches format 123-456-7890 or 456-7890
+            string countryCodeAndDashSeparatedPattern = @"^\+?\d{1,3}-?(\d{3}-)?\d{3}-\d{4}$"; // Matches country code and/or area code with dashes (e.g., +1-123-456-7890)
+
+            string result;
 
             if (Regex.IsMatch(phoneNumber, tenDigitPattern))
             {
-                return "Valid number";
+                result = "Valid 10-digit number.";
             }
             else if (Regex.IsMatch(phoneNumber, countryCodePattern))
             {
-                return "Valid number with country code";
+                result = "Valid number with country code.";
             }
-            else if (Regex.IsMatch(phoneNumber, withoutParenthesesAndCountryCodePattern))
+            else if (Regex.IsMatch(phoneNumber, countryCodeAndDashSeparatedPattern))
             {
-                return "Valid number without parentheses for area code";
+                result = "Valid number with optional country code and dashes.";
             }
-            else if (Regex.IsMatch(phoneNumber, withoutParenthesesPattern))
+            else if (Regex.IsMatch(phoneNumber, dashSeparatedPattern))
             {
-                return "Valid number with parentheses for area code";
+                result = "Valid number with dashes.";
             }
             else
             {
-                return "Invalid phone number format";
+                result = "Invalid phone number format.";
             }
+
+            // Concatenate the result to the result string
+            //resultStringAfterCheck += $"{phoneNumber}: {result}\n";
+            resultStringAfterCheck += $"{phoneNumber}: {result} ";
+
+            return result;
         }
 
-
     }
+
+
+
 }
+
